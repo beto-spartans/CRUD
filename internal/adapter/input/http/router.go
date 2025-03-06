@@ -1,32 +1,17 @@
 package http
 
 import (
+	"github.com/gorilla/mux"
 	"net/http"
 )
 
 func NewRouter(controller *UserController) http.Handler {
-	mux := http.NewServeMux()
+	router := mux.NewRouter()
 
-	mux.HandleFunc("/users/", func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case http.MethodGet:
-			controller.GetUser(w, r)
-		case http.MethodPut:
-			controller.UpdateUser(w, r)
-		case http.MethodDelete:
-			controller.DeleteUser(w, r)
-		default:
-			http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
-		}
-	})
+	router.HandleFunc("/users", controller.CreateUser).Methods("POST")
+	router.HandleFunc("/users/{id}", controller.GetUser).Methods("GET")
+	router.HandleFunc("/users/{id}", controller.UpdateUser).Methods("PUT")
+	router.HandleFunc("/users/{id}", controller.DeleteUser).Methods("DELETE")
 
-	mux.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method == http.MethodPost {
-			controller.CreateUser(w, r)
-		} else {
-			http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
-		}
-	})
-
-	return mux
+	return router
 }

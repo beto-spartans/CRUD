@@ -4,8 +4,8 @@ import (
 	"CRUD/internal/usecase/user"
 	"encoding/json"
 	"github.com/google/uuid"
+	"github.com/gorilla/mux"
 	"net/http"
-	"strings"
 )
 
 type UserController struct {
@@ -39,29 +39,28 @@ func (c *UserController) CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *UserController) GetUser(w http.ResponseWriter, r *http.Request) {
-	path := r.URL.Path
-	userIDStr := strings.TrimPrefix(path, "/users/")
-	if userIDStr == "" {
+	vars := mux.Vars(r)
+	id, ok := vars["id"]
+	if !ok || id == "" {
 		http.Error(w, "ID no proporcionado", http.StatusBadRequest)
 		return
 	}
-	user, err := c.service.GetUser(userIDStr)
+	userData, err := c.service.GetUser(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(user)
+	json.NewEncoder(w).Encode(userData)
 }
 
 func (c *UserController) UpdateUser(w http.ResponseWriter, r *http.Request) {
-	path := r.URL.Path
-	userIDStr := strings.TrimPrefix(path, "/users/")
-	if userIDStr == "" {
+	vars := mux.Vars(r)
+	id, ok := vars["id"]
+	if !ok || id == "" {
 		http.Error(w, "ID no proporcionado", http.StatusBadRequest)
 		return
 	}
-
 	var request struct {
 		Name  string `json:"name"`
 		Email string `json:"email"`
@@ -72,7 +71,7 @@ func (c *UserController) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	updatedUser, err := c.service.UpdateUser(userIDStr, request.Name, request.Email)
+	updatedUser, err := c.service.UpdateUser(id, request.Name, request.Email)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -83,14 +82,14 @@ func (c *UserController) UpdateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *UserController) DeleteUser(w http.ResponseWriter, r *http.Request) {
-	path := r.URL.Path
-	userIDStr := strings.TrimPrefix(path, "/users/")
-	if userIDStr == "" {
+	vars := mux.Vars(r)
+	id, ok := vars["id"]
+	if !ok || id == "" {
 		http.Error(w, "ID no proporcionado", http.StatusBadRequest)
 		return
 	}
 
-	if err := c.service.DeleteUser(userIDStr); err != nil {
+	if err := c.service.DeleteUser(id); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

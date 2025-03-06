@@ -16,8 +16,8 @@ func NewUserRepository(db *sql.DB) user.Repository {
 }
 
 func (repo *UserRepositoryDB) CreateUser(u *user.User) error {
-	query := `INSERT INTO users (id ,name, email) VALUES ($1, $2, $3)`
-	err := repo.db.QueryRow(query, u.ID, u.Name, u.Email).Scan(&u.ID)
+	query := `INSERT INTO users.users_table (id_user , name , email) VALUES ($1, $2, $3)`
+	_, err := repo.db.Exec(query, u.ID, u.Name, u.Email)
 	if err != nil {
 		return fmt.Errorf("error al crear usuario: %w", err)
 	}
@@ -59,7 +59,7 @@ func (repo *UserRepositoryDB) DeleteUser(id string) error {
 }
 
 func (repo *UserRepositoryDB) GetUserById(id string) (*user.User, error) {
-	query := `SELECT id, name, email, age FROM users WHERE id = $1`
+	query := `SELECT id_user, name, email FROM users.users_table WHERE id_user = $1`
 	u := &user.User{}
 	err := repo.db.QueryRow(query, id).Scan(&u.ID, &u.Name, &u.Email)
 	if err != nil {
