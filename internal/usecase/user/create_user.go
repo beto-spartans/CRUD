@@ -2,6 +2,7 @@ package user
 
 import (
 	"CRUD/internal/domain/user"
+	"log"
 )
 
 type CreateUserUseCase struct {
@@ -12,16 +13,17 @@ func NewCreateUserUseCase(repo user.Repository) *CreateUserUseCase {
 	return &CreateUserUseCase{repo: repo}
 }
 
-func (uc *CreateUserUseCase) Execute(id int, name, email string) (*user.User, error) {
-	user, err := user.NewUser(id, name, email)
+func (uc *CreateUserUseCase) Execute(id, name, email string) (*user.User, error) {
+	newUser, err := user.NewUser(id, name, email)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := uc.repo.CreateUser(user); err != nil {
+	if err := uc.repo.CreateUser(newUser); err != nil {
 		return nil, err
 	}
 
-	return user, nil
+	log.Printf("El usuario fue creado correctamente\n", newUser)
+	return newUser, nil
 
 }

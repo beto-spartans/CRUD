@@ -3,12 +3,12 @@ package user
 import "errors"
 
 type User struct {
-	ID    int    `json:"id"`
+	ID    string `json:"id"`
 	Name  string `json:"name"`
 	Email string `json:"email"`
 }
 
-func NewUser(id int, name, email string) (*User, error) {
+func NewUser(id, name, email string) (*User, error) {
 
 	if email == "" {
 		return nil, errors.New("email is required")
