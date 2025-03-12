@@ -13,7 +13,7 @@ type ServiceRepository struct {
 }
 type Repository interface {
 	GetServices(page, size int, queryFilter string) ([]service.Service, error) // Método para obtener todos los servicios
-
+	// cambio
 }
 
 func NewServiceRepository(db *sql.DB) service.Repository {
