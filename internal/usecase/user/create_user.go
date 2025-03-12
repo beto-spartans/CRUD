@@ -23,7 +23,7 @@ func (uc *CreateUserUseCase) Execute(id, name, email string) (*user.User, error)
 		return nil, err
 	}
 
-	log.Printf("El usuario fue creado correctamente\n", newUser)
+	log.Print("El usuario fue creado correctamente\n", newUser)
 	return newUser, nil
 
 }

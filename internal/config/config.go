@@ -16,8 +16,8 @@ type Config struct {
 func NewConfig() *Config {
 	return &Config{
 		PostgresUser:     "postgres",
-		PostgresPassword: "macbuuren12",
-		PostgresDBName:   "users",
+		PostgresPassword: "cloud000",
+		PostgresDBName:   "users_db",
 		PostgresHost:     "localhost",
 		PostgresPort:     5432,
 		SSLMode:          "disable",
